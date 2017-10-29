@@ -2,7 +2,7 @@ package com.flipkart.checkout.automation;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
-import java.io.FileReader;
+import java.io.InputStream;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -23,6 +23,10 @@ public class FlipkartAutomationTestScript {
 	 * @param args arguments to be used in the main function
 	 */
 	public static void main(String[] args) {
+		
+		// Declaring local values
+		InputStream inputStreamDataFile = null;
+		InputStream inputStreamORFile = null;
 
 		/*
 		 * Set this property to read firefox driver from a given path of your local
@@ -50,14 +54,14 @@ public class FlipkartAutomationTestScript {
 		try {
 
 			// Reading test data from "dataFile.properties" file
-			FileReader reader = new FileReader("D:\\ToolsQA\\FlipkartCheckoutAutomation\\src\\com\\flipkart\\checkout\\automation\\dataFile.properties");
+			inputStreamDataFile = FlipkartAutomationTestScript.class.getClassLoader().getResourceAsStream("dataFile.properties");
 			properties = new Properties();
-			properties.load(reader);
+			properties.load(inputStreamDataFile);
 
 			// Reading locators from "OR.properties" file
-			FileReader orReader = new FileReader("D:\\ToolsQA\\FlipkartCheckoutAutomation\\src\\com\\flipkart\\checkout\\automation\\OR.properties");
+			inputStreamORFile = FlipkartAutomationTestScript.class.getClassLoader().getResourceAsStream("OR.properties");
 			orProperties = new Properties();
-			orProperties.load(orReader);
+			orProperties.load(inputStreamORFile);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -86,8 +90,14 @@ public class FlipkartAutomationTestScript {
 		// Calling function for continuing from Shipping Page
 		continueFromShippingPage();
 
-		// Close the webdriver current instance after testing is complete
-		driver.close();
+		// Closing the webdriver current instance and inputstreams after testing is complete
+		try {
+			driver.close();
+			inputStreamDataFile.close();
+			inputStreamORFile.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/*
